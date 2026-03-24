@@ -71,7 +71,7 @@ public class AgriAIController {
         return aiService.generateNotifications(lang);
     }
 
-    @PostMapping("/analyze")
+    @PostMapping(value = "/analyze", produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> analyzeCrop(@RequestBody Map<String, String> body) {
         String cropType = body.getOrDefault("cropType", "Rice");
         String imageUrl = body.get("imageUrl"); // Get Base64 image
@@ -82,7 +82,8 @@ public class AgriAIController {
             return ResponseEntity.badRequest().body(scanResult);
         }
 
-        return ResponseEntity.ok(scanResult);
+        // Return the clean JSON string from Gemini directly as the response body
+        return ResponseEntity.ok(scanResult.get("raw_ai_data"));
     }
 
     @PostMapping("/voice")
