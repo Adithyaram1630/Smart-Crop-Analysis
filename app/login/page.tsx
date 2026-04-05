@@ -18,20 +18,22 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState("ravi@example.com")
   const [password, setPassword] = useState("password")
+  const [role, setRole] = useState("farmer")
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
       const res = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, role })
       })
       const data = await res.json()
       if (res.ok) {
         localStorage.setItem("crophealth_token", data.token)
+        localStorage.setItem("crophealth_role", data.user?.role || role)
         toast.success(`Welcome back, ${data.user?.name || "there"}!`)
         router.push("/dashboard")
       } else {
@@ -102,7 +104,7 @@ export default function LoginPage() {
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">Sign in as</Label>
-                  <Select defaultValue="farmer">
+                  <Select value={role} onValueChange={setRole}>
                     <SelectTrigger id="role">
                       <SelectValue />
                     </SelectTrigger>
@@ -161,6 +163,7 @@ export default function LoginPage() {
                   className="w-full border-dashed" 
                   onClick={() => {
                     localStorage.setItem("crophealth_token", "guest-token");
+                    localStorage.setItem("crophealth_role", role);
                     router.push("/dashboard");
                   }}
                 >

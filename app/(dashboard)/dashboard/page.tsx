@@ -16,7 +16,8 @@ import {
   ShieldCheck,
   ChevronRight,
   MessageSquare,
-  Volume2
+  Volume2,
+  MapPin
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -79,30 +80,49 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Live Weather Card */}
-        <Card className="border-border bg-background/50 backdrop-blur-sm group hover:border-primary/50 transition-colors cursor-pointer overflow-hidden">
+        <Card className="border-border bg-background/50 backdrop-blur-sm group hover:border-primary/50 transition-all duration-500 cursor-pointer overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5">
           <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-8 -mt-8 group-hover:bg-primary/10 transition-colors" />
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <CloudRain className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                {weather?.forecast?.toLowerCase().includes("rain") ? (
+                  <CloudRain className="w-5 h-5 text-primary animate-bounce-subtle" />
+                ) : weather?.temperature && weather.temperature > 30 ? (
+                  <Thermometer className="w-5 h-5 text-orange-500 animate-pulse" />
+                ) : (
+                  <Wind className="w-5 h-5 text-primary animate-drift" />
+                )}
               </div>
-              <Badge variant="secondary" className="bg-primary/5 text-primary border-0 text-[10px] font-black uppercase">Live</Badge>
+              <div className="flex items-center gap-2">
+                <div className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </div>
+                <Badge variant="secondary" className="bg-primary/5 text-primary border-0 text-[9px] font-black uppercase tracking-tighter">Live Satellite</Badge>
+              </div>
             </div>
             <div className="space-y-1">
-              <h3 className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Local Weather</h3>
+              <h3 className="text-[9px] uppercase font-black tracking-widest text-muted-foreground/60 flex items-center gap-1.5">
+                <MapPin className="w-3 h-3" />
+                {weather?.city || "Hyderabad"} Weather
+              </h3>
               <div className="flex items-baseline gap-2">
-                <p className="text-3xl font-black">{weather?.temperature?.toFixed(1) || "28.5"}°C</p>
-                <p className="text-xs font-bold text-muted-foreground">{weather?.forecast || "Partly Cloudy"}</p>
+                <p className="text-3xl font-black tabular-nums tracking-tighter">
+                  {weather?.temperature?.toFixed(1) || "28.5"}°C
+                </p>
+                <Badge variant="outline" className="text-[10px] h-5 border-primary/20 text-primary font-bold bg-primary/5">
+                  {weather?.forecast || "Optimal"}
+                </Badge>
               </div>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border/50 pt-4">
-              <div className="flex items-center gap-1.5">
-                <Droplets className="w-3 h-3 text-primary/60" />
-                <span className="text-[10px] font-bold text-muted-foreground">{weather?.humidity || "65"}% Humidity</span>
+            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border/10 pt-4">
+              <div className="flex items-center gap-1.5 group/hum">
+                <Droplets className="w-3 h-3 text-primary/60 group-hover/hum:text-primary transition-colors" />
+                <span className="text-[9px] font-bold text-muted-foreground">{weather?.humidity || "65"}% Humidity</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <Wind className="w-3 h-3 text-primary/60" />
-                <span className="text-[10px] font-bold text-muted-foreground">{weather?.rainfall || "0.0"}mm Rain</span>
+              <div className="flex items-center gap-1.5 group/rain">
+                <CloudRain className="w-3 h-3 text-primary/60 group-hover/rain:text-primary transition-colors" />
+                <span className="text-[9px] font-bold text-muted-foreground">{weather?.rainfall || "0.0"}mm Prep.</span>
               </div>
             </div>
           </CardContent>

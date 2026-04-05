@@ -34,9 +34,14 @@ public class AgriAIService {
                     "1. Identify the disease or state. 2. Provide severity (High/Medium/Low/Healthy). " +
                     "3. Provide EXACT organic ways to reduce it (in a list). 4. Provide specific scientific pesticides if needed. " +
                     "5. Give a bullet point summary as: • PART: xyz • STATUS: abc • ISSUE: def • IMPACT: ghi. " +
-                    "Respond ONLY in this JSON format: {\"disease\":\"...\", \"severity\":\"...\", \"status\":\"alert|warning|healthy\", \"confidence\":90, \"organic_treatments\":[\"...\"], \"pesticide_usage\":[\"...\"], \"summary\":\"...\"}";
+                    "6. Return ONLY the JSON result, no other text.";
 
-            RestTemplate restTemplate = new RestTemplate();
+            // Use SimpleClientHttpRequestFactory to set timeouts
+            org.springframework.http.client.SimpleClientHttpRequestFactory factory = new org.springframework.http.client.SimpleClientHttpRequestFactory();
+            factory.setConnectTimeout(30000); // 30 seconds
+            factory.setReadTimeout(60000);    // 60 seconds
+            RestTemplate restTemplate = new RestTemplate(factory);
+            
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -53,25 +58,47 @@ public class AgriAIService {
             Map<String, Object> content = new HashMap<>();
             content.put("parts", List.of(textPart, imagePart));
 
+            // Force JSON output from Gemini
+            Map<String, Object> generationConfig = new HashMap<>();
+            generationConfig.put("response_mime_type", "application/json");
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("contents", List.of(content));
+            requestBody.put("generationConfig", generationConfig);
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
             ResponseEntity<Map> response = restTemplate.postForEntity(GEMINI_API_URL + apiKey, entity, Map.class);
 
             Map<String, Object> responseBody = response.getBody();
+            if (responseBody == null || !responseBody.containsKey("candidates")) {
+                return Map.of("raw_ai_data", getFallbackAnalysis(cropType));
+            }
+
             List<Map<String, Object>> candidates = (List<Map<String, Object>>) responseBody.get("candidates");
+            if (candidates.isEmpty()) {
+                return Map.of("raw_ai_data", getFallbackAnalysis(cropType));
+            }
+
             Map<String, Object> firstCandidate = candidates.get(0);
             Map<String, Object> resContent = (Map<String, Object>) firstCandidate.get("content");
             List<Map<String, Object>> resParts = (List<Map<String, Object>>) resContent.get("parts");
             String generatedText = (String) resParts.get(0).get("text");
 
-            String cleanJson = generatedText.replaceAll("^```json", "").replaceAll("```$", "").trim();
+            // Clean JSON - extracting everything between the first { and the last }
+            String cleanJson = generatedText;
+            int start = generatedText.indexOf("{");
+            int end = generatedText.lastIndexOf("}");
+            if (start != -1 && end != -1 && end > start) {
+                cleanJson = generatedText.substring(start, end + 1);
+            } else {
+                cleanJson = generatedText.replaceAll("^```json", "").replaceAll("```$", "").trim();
+            }
+            
             return Map.of("raw_ai_data", cleanJson);
 
         } catch (Exception e) {
             // RECOVERY: AI LIMIT REACHED - USE AUTOMATIC REASONING
-            System.err.println("Gemini Limit Reached. Activating Local Smart Fallback Doctor...");
+            System.err.println("Gemini Error: " + e.getMessage() + ". Activating Local Smart Fallback Doctor...");
             return Map.of("raw_ai_data", getFallbackAnalysis(cropType));
         }
     }

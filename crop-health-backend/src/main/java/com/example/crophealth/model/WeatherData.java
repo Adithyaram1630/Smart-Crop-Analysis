@@ -19,4 +19,5 @@ public class WeatherData {
     private Double humidity;
     private Double rainfall;
     private String forecast;
+    private String city;
 }

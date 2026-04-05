@@ -36,7 +36,10 @@ public class AgriAIController {
 
     @PostMapping("/scans")
     public Scan saveScan(@RequestBody Scan scan) {
-        return scanRepository.save(scan);
+        System.out.println("Processing Scan Save: " + scan.getCrop() + " - " + scan.getDisease());
+        Scan saved = scanRepository.save(scan);
+        System.out.println("Scan Saved with ID: " + saved.getId());
+        return saved;
     }
 
     @DeleteMapping("/scans")
@@ -45,8 +48,8 @@ public class AgriAIController {
     }
 
     @GetMapping("/weather")
-    public WeatherData getLatestWeather() {
-        return weatherService.getLatestWeather();
+    public WeatherData getLatestWeather(@RequestParam(defaultValue = "Hyderabad") String city) {
+        return weatherService.getLatestWeather(city);
     }
 
     @GetMapping("/market-prices")

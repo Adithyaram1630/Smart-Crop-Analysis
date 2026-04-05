@@ -70,69 +70,82 @@ export function AppSidebar() {
             <Leaf className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <p className="font-bold text-foreground text-sm leading-tight">CropSense</p>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest leading-tight">Health Monitor</p>
+            <p className="font-bold text-sidebar-foreground text-sm leading-tight">CropSense</p>
+            <p className="text-[10px] text-sidebar-foreground/50 uppercase font-bold tracking-widest leading-tight">Health Monitor</p>
           </div>
         </Link>
       </SidebarHeader>
 
       <SidebarContent className="px-4 py-2">
-        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 mb-4">
+        <p className="text-[10px] font-black text-white/40 uppercase tracking-widest px-3 mb-4">
           {t("main_menu")}
         </p>
         <SidebarMenu className="gap-1.5">
-          {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
-            return (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive}
-                  className={cn(
-                    "w-full h-11 px-3 rounded-xl transition-all duration-200",
-                    isActive 
-                      ? "bg-primary/10 text-primary font-bold shadow-sm" 
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  )}
-                  onClick={() => setOpenMobile(false)}
-                >
-                  <Link href={item.href} className="flex items-center gap-3">
-                    <Icon className={cn("w-4.5 h-4.5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
-                    <span className="flex-1 text-sm">{t(item.labelKey)}</span>
-                    {item.badge && (
-                      <Badge className="bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0 h-4.5 min-w-4.5 flex items-center justify-center rounded-full border-2 border-background">
-                        {item.badge}
-                      </Badge>
+          {navItems
+            .filter(item => {
+              const userRole = typeof window !== 'undefined' ? localStorage.getItem("crophealth_role") || "farmer" : "farmer";
+              if (userRole === "admin") {
+                // For admin, only show Admin and Dashboard (maybe?) 
+                // User said: "ONLY ADMIN HUB DASHBOARD SHIULD BE APPEARED"
+                // Let's show /dashboard and /admin
+                return item.href === "/dashboard" || item.href === "/admin";
+              } else {
+                // For farmer, hide Admin
+                return item.href !== "/admin";
+              }
+            })
+            .map((item) => {
+              const Icon = item.icon
+              const isActive = pathname === item.href
+              return (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    className={cn(
+                      "w-full h-11 px-3 rounded-xl transition-all duration-200",
+                      isActive 
+                        ? "bg-primary text-primary-foreground font-black shadow-lg shadow-primary/20" 
+                        : "text-sidebar-foreground/60 hover:bg-white/5 hover:text-sidebar-foreground"
                     )}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )
-          })}
+                    onClick={() => setOpenMobile(false)}
+                  >
+                    <Link href={item.href} className="flex items-center gap-3">
+                      <Icon className={cn("w-4.5 h-4.5 shrink-0", isActive ? "text-primary-foreground" : "text-sidebar-foreground/40")} />
+                      <span className="flex-1 text-sm">{t(item.labelKey)}</span>
+                      {item.badge && (
+                        <Badge className="bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0 h-4.5 min-w-4.5 flex items-center justify-center rounded-full border-2 border-background">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            })}
         </SidebarMenu>
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-border space-y-4">
         {/* Language Switcher */}
-        <div className="px-3 py-2 bg-muted/30 rounded-xl border border-border/50">
-          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-2 px-1">{t("language_select")}</p>
+        <div className="px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+          <p className="text-[9px] font-black text-white/90 uppercase tracking-widest mb-2 px-1 opacity-80">{t("language_select")}</p>
           <div className="flex gap-1">
              <button 
                onClick={() => setLanguage("en")}
-               className={cn("flex-1 py-1 rounded-lg text-[10px] font-black transition-all", language === "en" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted/50")}
+               className={cn("flex-1 py-1 rounded-lg text-[10px] font-black transition-all", language === "en" ? "bg-white text-primary font-black shadow-sm" : "text-white/40 hover:bg-white/5 hover:text-white")}
              >
                EN
              </button>
              <button 
                onClick={() => setLanguage("te")}
-               className={cn("flex-1 py-1 rounded-lg text-[10px] font-black transition-all", language === "te" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted/50")}
+               className={cn("flex-1 py-1 rounded-lg text-[10px] font-black transition-all", language === "te" ? "bg-white text-primary font-black shadow-sm" : "text-white/40 hover:bg-white/5 hover:text-white")}
              >
                తెలుగు
              </button>
              <button 
                onClick={() => setLanguage("hi")}
-               className={cn("flex-1 py-1 rounded-lg text-[10px] font-black transition-all", language === "hi" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted/50")}
+               className={cn("flex-1 py-1 rounded-lg text-[10px] font-black transition-all", language === "hi" ? "bg-white text-primary font-black shadow-sm" : "text-white/40 hover:bg-white/5 hover:text-white")}
              >
                हिंदी
              </button>
@@ -148,10 +161,14 @@ export function AppSidebar() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left min-w-0">
-                <p className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">Ravi Kumar</p>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold truncate">Premium Farmer</p>
+                <p className="text-sm font-black text-white truncate group-hover:text-primary transition-colors">
+                  {typeof window !== 'undefined' && localStorage.getItem("crophealth_role") === "admin" ? "Admin User" : "Ravi Kumar"}
+                </p>
+                <p className="text-[10px] text-white/50 uppercase font-black truncate">
+                  {typeof window !== 'undefined' && localStorage.getItem("crophealth_role") === "admin" ? "System Administrator" : "Premium Farmer"}
+                </p>
               </div>
-              <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              <ChevronDown className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56 p-2 rounded-xl">

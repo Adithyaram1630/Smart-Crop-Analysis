@@ -40,6 +40,7 @@ export interface WeatherData {
   humidity: number;
   rainfall: number;
   forecast: string;
+  city?: string;
 }
 
 export interface MarketPrice {

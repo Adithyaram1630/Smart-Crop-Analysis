@@ -21,7 +21,8 @@ public class Scan {
     private String date;
     private Integer confidence;
     
-    @Column(columnDefinition = "TEXT")
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String image;
 
     @ElementCollection
