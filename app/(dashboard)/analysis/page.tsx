@@ -1,14 +1,14 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import Link from "next/link"
-import { useState, useEffect } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { ArrowLeft, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export default function AnalysisPage() {
+export const dynamic = "force-dynamic";
+
+function AnalysisContent() {
   const searchParams = useSearchParams()
   const searchId = searchParams.get("id")
 
@@ -32,7 +32,7 @@ export default function AnalysisPage() {
   useEffect(() => {
     if (scans.length > 0) {
       if (searchId) {
-        const found = scans.find((s) => s.id?.toString() === searchId)
+        const found = scans.find((s: any) => s.id?.toString() === searchId)
         setLatestScan(found || scans[0])
       } else {
         setLatestScan(scans[0])
@@ -71,17 +71,50 @@ export default function AnalysisPage() {
         <Link href="/dashboard">
           <ArrowLeft />
         </Link>
-        <h1 className="text-2xl font-bold">Analysis</h1>
+        <h1 className="text-2xl font-bold">Analysis Result</h1>
       </div>
 
-      <div className="border p-4 rounded-xl">
-        <h2 className="text-xl font-semibold">
-          {latestScan.disease || "Unknown Disease"}
-        </h2>
-        <p>Crop: {latestScan.crop || "N/A"}</p>
-        <p>Severity: {latestScan.severity || "N/A"}</p>
-        <p>Confidence: {latestScan.confidence || "0"}%</p>
+      <div className="border border-border/50 bg-card/40 backdrop-blur-xl p-6 rounded-2xl shadow-xl space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-foreground">
+            {latestScan.disease || "Unknown Disease"}
+          </h2>
+          <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+            latestScan.severity === "High" ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
+          }`}>
+            {latestScan.severity || "Medium"}
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="p-3 bg-muted/30 rounded-lg">
+            <p className="text-muted-foreground mb-1">Crop Type</p>
+            <p className="font-semibold">{latestScan.crop || "N/A"}</p>
+          </div>
+          <div className="p-3 bg-muted/30 rounded-lg">
+            <p className="text-muted-foreground mb-1">Confidence Score</p>
+            <p className="font-semibold">{latestScan.confidence || "0"}%</p>
+          </div>
+        </div>
+
+        {latestScan.summary && (
+          <div className="p-4 bg-primary/5 border border-primary/10 rounded-xl">
+             <p className="text-sm italic">{latestScan.summary}</p>
+          </div>
+        )}
       </div>
     </div>
+  )
+}
+
+export default function AnalysisPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p>Initializing analysis engine...</p>
+      </div>
+    }>
+      <AnalysisContent />
+    </Suspense>
   )
 }
