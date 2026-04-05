@@ -1,0 +1,5 @@
+crop-health-backend
+.git
+.vscode
+node_modules
+.next

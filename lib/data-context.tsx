@@ -20,9 +20,7 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081").endsWith("/api") 
-  ? (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081")
-  : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081") + "/api";
+import { API_BASE_URL } from "./api-config";
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const [scans, setScans] = useState<Scan[]>(INITIAL_SCANS);

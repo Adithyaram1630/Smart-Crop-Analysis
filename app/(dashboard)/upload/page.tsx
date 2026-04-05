@@ -38,6 +38,8 @@ const tips = [
   "Include both healthy and affected areas for comparison",
 ]
 
+import { getApiUrl } from "@/lib/api-config";
+
 export default function UploadPage() {
   const { addScan, scans } = useData()
   const router = useRouter()
@@ -74,8 +76,7 @@ export default function UploadPage() {
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem("crophealth_token") : "";
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-      const res = await fetch(`${apiUrl}/api/analyze`, {
+      const res = await fetch(getApiUrl("/analyze"), {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
