@@ -1,5 +1,5 @@
-"use client"
-
+"use client";
+export const dynamic = "force-dynamic";
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
@@ -135,16 +135,16 @@ export default function AnalysisPage() {
       {/* Result summary */}
       <Card className={cn(
         "border-2 bg-background/50 backdrop-blur-md transition-all",
-        latestScan.status === "alert" ? "border-destructive/40 shadow-[0_0_20px_rgba(239,68,68,0.1)]" : 
-        latestScan.status === "warning" ? "border-amber-400/40 shadow-[0_0_20px_rgba(251,191,36,0.1)]" : 
-        "border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.1)]"
+        latestScan.status === "alert" ? "border-destructive/40 shadow-[0_0_20px_rgba(239,68,68,0.1)]" :
+          latestScan.status === "warning" ? "border-amber-400/40 shadow-[0_0_20px_rgba(251,191,36,0.1)]" :
+            "border-primary/40 shadow-[0_0_20px_rgba(34,197,94,0.1)]"
       )}>
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             <div className={cn(
               "w-20 h-20 rounded-3xl flex items-center justify-center shrink-0 shadow-lg",
-              latestScan.status === "alert" ? "bg-destructive/10" : 
-              latestScan.status === "warning" ? "bg-amber-400/10" : "bg-primary/10"
+              latestScan.status === "alert" ? "bg-destructive/10" :
+                latestScan.status === "warning" ? "bg-amber-400/10" : "bg-primary/10"
             )}>
               {latestScan.status === "alert" ? (
                 <AlertTriangle className="w-10 h-10 text-destructive" />
@@ -159,9 +159,9 @@ export default function AnalysisPage() {
                 <h2 className="text-xl md:text-2xl font-bold text-foreground">{latestScan.disease}</h2>
                 <Badge className={cn(
                   "text-xs px-2.5 py-0.5 font-bold",
-                  latestScan.severity === "High" ? "bg-destructive text-destructive-foreground" : 
-                  latestScan.severity === "Medium" ? "bg-amber-500 text-white" : 
-                  "bg-primary text-primary-foreground"
+                  latestScan.severity === "High" ? "bg-destructive text-destructive-foreground" :
+                    latestScan.severity === "Medium" ? "bg-amber-500 text-white" :
+                      "bg-primary text-primary-foreground"
                 )}>
                   {latestScan.severity} Severity
                 </Badge>
@@ -205,50 +205,50 @@ export default function AnalysisPage() {
               <CardTitle className="text-sm font-black uppercase tracking-widest text-primary italic">AI Real-Time Analysis & Smart Relief</CardTitle>
             </CardHeader>
             <CardContent className="pt-5 space-y-6">
-               <div className="space-y-3">
-                 <h4 className="text-xs font-black uppercase tracking-widest text-foreground/50 underline decoration-primary/20 underline-offset-4">1. Crop Assessment Summary:</h4>
-                 {(latestScan.summary || "").split('\n').filter(Boolean).map((line, i) => (
-                   <p key={i} className={cn(
-                     "text-sm md:text-base font-bold leading-relaxed italic border-l-4 border-primary/30 pl-4 py-2 bg-primary/5 rounded-r-xl",
-                     line.startsWith('•') ? "ml-2" : ""
-                   )}>
-                     {line}
-                   </p>
-                 ))}
-               </div>
+              <div className="space-y-3">
+                <h4 className="text-xs font-black uppercase tracking-widest text-foreground/50 underline decoration-primary/20 underline-offset-4">1. Crop Assessment Summary:</h4>
+                {(latestScan.summary || "").split('\n').filter(Boolean).map((line, i) => (
+                  <p key={i} className={cn(
+                    "text-sm md:text-base font-bold leading-relaxed italic border-l-4 border-primary/30 pl-4 py-2 bg-primary/5 rounded-r-xl",
+                    line.startsWith('•') ? "ml-2" : ""
+                  )}>
+                    {line}
+                  </p>
+                ))}
+              </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-primary/10">
-                  <div className="space-y-4">
-                    <h4 className="text-xs font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">
-                       🌿 2. Organic Control Ways:
-                    </h4>
-                    <div className="space-y-2">
-                      {(latestScan.organicTreatments || []).map((action, i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-950">
-                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0" />
-                          <span className="text-xs font-bold leading-snug">{action}</span>
-                        </div>
-                      ))}
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-primary/10">
+                <div className="space-y-4">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">
+                    🌿 2. Organic Control Ways:
+                  </h4>
+                  <div className="space-y-2">
+                    {(latestScan.organicTreatments || []).map((action, i) => (
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-950">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0" />
+                        <span className="text-xs font-bold leading-snug">{action}</span>
+                      </div>
+                    ))}
                   </div>
+                </div>
 
-                  <div className="space-y-4">
-                    <h4 className="text-xs font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
-                       🧪 3. Scientific Pesticide Usage:
-                    </h4>
-                    <div className="space-y-2">
-                      {(latestScan.pesticideUsage || []).map((action, i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-950">
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                          <span className="text-xs font-bold leading-snug">{action}</span>
-                        </div>
-                      ))}
-                      {(latestScan.severity === "Healthy") && (
-                        <p className="text-[10px] text-muted-foreground italic font-medium">None required for healthy crops.</p>
-                      )}
-                    </div>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
+                    🧪 3. Scientific Pesticide Usage:
+                  </h4>
+                  <div className="space-y-2">
+                    {(latestScan.pesticideUsage || []).map((action, i) => (
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-950">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
+                        <span className="text-xs font-bold leading-snug">{action}</span>
+                      </div>
+                    ))}
+                    {(latestScan.severity === "Healthy") && (
+                      <p className="text-[10px] text-muted-foreground italic font-medium">None required for healthy crops.</p>
+                    )}
                   </div>
-               </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -300,23 +300,23 @@ export default function AnalysisPage() {
               <CardTitle className="text-sm font-black uppercase tracking-widest text-primary italic">AI Crop Health Summary</CardTitle>
             </CardHeader>
             <CardContent className="pt-5">
-               <div className="space-y-2">
-                 {(latestScan.summary || "").split('\n').filter(Boolean).map((line, i) => (
-                   <p key={i} className="text-sm md:text-base font-medium leading-relaxed italic">
-                     {line}
-                   </p>
-                 ))}
-               </div>
+              <div className="space-y-2">
+                {(latestScan.summary || "").split('\n').filter(Boolean).map((line, i) => (
+                  <p key={i} className="text-sm md:text-base font-medium leading-relaxed italic">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-emerald-500/20 bg-emerald-500/5 backdrop-blur-sm">
               <CardHeader className="pb-3 border-b border-emerald-500/10">
-                 <div className="flex items-center gap-3">
-                    <Leaf className="w-5 h-5 text-emerald-600" />
-                    <CardTitle className="text-base font-bold text-emerald-700">Organic Solutions</CardTitle>
-                 </div>
+                <div className="flex items-center gap-3">
+                  <Leaf className="w-5 h-5 text-emerald-600" />
+                  <CardTitle className="text-base font-bold text-emerald-700">Organic Solutions</CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="p-6">
                 <ul className="space-y-4">
@@ -329,10 +329,10 @@ export default function AnalysisPage() {
 
             <Card className="border-blue-500/20 bg-blue-500/5 backdrop-blur-sm">
               <CardHeader className="pb-3 border-b border-blue-500/10">
-                 <div className="flex items-center gap-3">
-                    <FlaskConical className="w-5 h-5 text-blue-600" />
-                    <CardTitle className="text-base font-bold text-blue-700">Pesticide Usage</CardTitle>
-                 </div>
+                <div className="flex items-center gap-3">
+                  <FlaskConical className="w-5 h-5 text-blue-600" />
+                  <CardTitle className="text-base font-bold text-blue-700">Pesticide Usage</CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="p-6">
                 <ul className="space-y-4">
